@@ -5,6 +5,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TW">
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_margin="14dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Attendence App"
+            android:textSize="20sp"
+            android:padding="6dp"
+            android:layout_weight="2"
+            />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="3">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="sidhartha"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Student"
+                />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_baseline_person_24"
+            />
+
+    </LinearLayout>
     <com.google.android.material.tabs.TabLayout
         android:layout_marginTop="5dp"
         android:layout_marginStart="14dp"
@@ -20,7 +63,7 @@
         app:tabIndicator="@drawable/tab_indicator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear"
        app:layout_constraintHorizontal_bias="0.5"/>
 
     <androidx.viewpager2.widget.ViewPager2
