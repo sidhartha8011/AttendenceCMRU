@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "312559570432",
+    "project_id": "attendencecmru-4adfc",
+    "storage_bucket": "attendencecmru-4adfc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312559570432:android:21f5c4c71330b8685452e5",
+        "android_client_info": {
+          "package_name": "com.example.attendencecmru"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312559570432-72b3nct4lo60b5qbfo2br5t11fbu4j1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuBUn6OJ40avYjdJ3ZLMNj9226bpPbLWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "312559570432-72b3nct4lo60b5qbfo2br5t11fbu4j1i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
