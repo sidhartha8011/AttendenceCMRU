@@ -1,6 +1,6 @@
 import csv,firebase_admin
 from firebase_admin import auth, credentials
-cred = credentials.Certificate("/Users/sidharthaparasramka/AndroidStudioProjects/AttendenceCMRU/script_id.json")
+cred = credentials.Certificate("/Users/sidharthaparasramka/AndroidStudioProjects/AttendenceCMRU/secrets/script_id.json")
 firebase_admin.initialize_app(cred)
 
 # Read the CSV file
