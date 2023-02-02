@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E4E1E1"
+    android:background="@color/white"
     tools:context=".TW">
     <LinearLayout
         android:id="@+id/linear"
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Attendence App"
-            android:textColor="@color/black"
+            android:textColor="@color/primaryDarkColor"
             android:textSize="20sp"
             android:padding="6dp"
             android:layout_weight="2"
@@ -33,14 +33,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryDarkColor"
                 android:text="sidhartha"
                 />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textColor="@color/black"
+                android:textColor="@color/primaryDarkColor"
                 android:text="Teacher"
                 />
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -57,6 +57,7 @@
         android:layout_marginStart="14dp"
         android:layout_marginEnd="14dp"
         android:id="@+id/tablayout"
+        android:background="@color/primaryLightColor"
         android:layout_width="0dp"
         android:layout_height="50dp"
         app:tabMode="fixed"

@@ -46,7 +46,7 @@
             android:inputType="textEmailAddress"
             android:padding="15dp"
             android:textColor="@color/black"
-            android:textColorHint="@color/black" />
+            android:textColorHint="#389fff" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,7 +70,7 @@
             android:drawableStart="@drawable/ic_baseline_lock_24"
             android:inputType="textPassword"
             android:textColor="@color/black"
-            android:textColorHint="@color/black"
+            android:textColorHint="#389fff"
             android:padding="15dp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"

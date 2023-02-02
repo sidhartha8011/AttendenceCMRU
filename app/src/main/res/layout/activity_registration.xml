@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E4E1E1"
+    android:background="@color/white"
     tools:context=".register.RegistrationActivity">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_marginTop="49dp"
         android:text="New Registration"
         android:textSize="30sp"
-        android:textColor="@color/black"
+        android:textColor="@color/primaryDarkColor"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
