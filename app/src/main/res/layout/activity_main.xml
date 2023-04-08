@@ -43,7 +43,6 @@
             android:drawableStart="@drawable/ic_baseline_person_24"
             android:drawablePadding="10dp"
             android:hint="E-Mail"
-            android:inputType="textEmailAddress"
             android:padding="15dp"
             android:textColor="@color/black"
             android:textColorHint="#389fff" />
@@ -85,14 +84,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/button_"
         android:padding="15dp"
         android:text="Login"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordedit"
-        app:layout_constraintVertical_bias="0.286" />
+        app:layout_constraintTop_toBottomOf="@id/passwordedit" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

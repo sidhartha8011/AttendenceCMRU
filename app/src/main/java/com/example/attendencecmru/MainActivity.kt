@@ -7,9 +7,10 @@ import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.example.attendencecmru.register.RegistrationActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import org.checkerframework.checker.units.qual.s
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,53 +20,67 @@ class MainActivity : AppCompatActivity() {
         val button:Button=findViewById(R.id.loginButton)
 
         val auth=FirebaseAuth.getInstance()
+        val db= Firebase.firestore
+
+
+        val usersRef1 = db.collection("students")
+        val usersRef2 = db.collection("teachers")
 
         val tf1:EditText=findViewById(R.id.edittext_email)
         val tf2:EditText=findViewById(R.id.edit_textpass)
 
-        val memail="master@gmail.com"
-        val mpass="master123"
-
 
         button.setOnClickListener {
-            val email=tf1.toString()
-            val pass=tf2.toString()
+            val email=tf1.text.toString()
+            val pass=tf2.text.toString()
+
 
             if(TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)){
                 Toast.makeText(this,"credentials cannot be empty", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            if(email==memail && pass==mpass) {
-                auth.signInWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val intent= Intent(this, MasterLogin::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
-                    }
-            }
-
-
             auth.signInWithEmailAndPassword(email,pass)
                 .addOnCompleteListener {
                     if(it.isSuccessful)
                     {
-                        val database= FirebaseDatabase.getInstance().getReference("Users")
-                        database.child(auth.currentUser!!.uid).get().addOnSuccessListener { dataSnapshot ->
-                            if (dataSnapshot.exists()){
-                                Toast.makeText(this,"login success", Toast.LENGTH_SHORT).show()
-                                val i=Intent(this,TW::class.java)
-                                startActivity(i)
-                            }
-                            else{
-                                val intent= Intent(this, RegistrationActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                        }
 
+                        val userId = auth.currentUser!!.uid
+
+
+                        usersRef1.document(userId).get()
+                            .addOnSuccessListener { document ->
+                                if (document.exists()) {
+
+                                    Toast.makeText(this,"login success", Toast.LENGTH_SHORT).show()
+                                    val i=Intent(this,TW::class.java)
+                                    i.putExtra("category",1)
+
+                                    startActivity(i)
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                pass
+                            }
+
+                        usersRef2.document(userId).get()
+                            .addOnSuccessListener { document ->
+                                if (document.exists()) {
+
+                                    Toast.makeText(this,"login success", Toast.LENGTH_SHORT).show()
+                                    val i=Intent(this,TW::class.java)
+                                    i.putExtra("category",2)
+                                    startActivity(i)
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this,it.exception?.message,Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    this,
+                                    "Data not present please contact admin",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                     }
                     else{
                         Toast.makeText(this,it.exception?.message, Toast.LENGTH_LONG).show()
