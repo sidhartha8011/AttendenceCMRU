@@ -1,7 +1,15 @@
 package com.example.attendencecmru
-
+import androidx.activity.OnBackPressedCallback
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -9,28 +17,64 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 import javax.security.auth.Subject
 
 class Course_eval : Fragment() {
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_course_eval, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_course_eval, container, false)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val imageView:ImageView=view.findViewById(R.id.qrdisplay)
+                if (imageView.visibility==View.VISIBLE) {
+                    // Perform your task here, for example, save the data and then exit the fragment
+                    // ...
+                    imageView.visibility=View.GONE
+
+                    val tableLayout = view.findViewById<TableLayout>(R.id.table_layout)
+                    tableLayout.visibility=View.VISIBLE
+
+                    // Call onBackPressed() to trigger the default behavior
+                   // isEnabled = false
+
+                } else {
+                    // If the condition is not true, allow the back button to behave as usual
+                //    isEnabled = false
+                    requireActivity().onBackPressed()
+                }
+            }
+        })
+
+        return view
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request location permission if not granted
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                Course_eval.REQUEST_LOCATION_PERMISSION
+            )
+        }
 
         val db = Firebase.firestore
         val auth = FirebaseAuth.getInstance()
@@ -161,23 +205,6 @@ class Course_eval : Fragment() {
                         }
 
 
-//
-//                        textView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-//                        textView1.gravity = Gravity.CENTER
-//
-//                        textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-//                        textView2.gravity = Gravity.CENTER
-//
-//                        textView3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-//                        textView3.gravity = Gravity.CENTER
-//
-
-//
-//                        textView1.setTextAppearance(R.style.rest)
-//
-//                        textView2.setTextAppearance(R.style.rest)
-//
-//                        textView3.setTextAppearance(R.style.rest)
 
                         tableLayout.addView(tableRow)
 
@@ -189,6 +216,11 @@ class Course_eval : Fragment() {
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
 
                 }
+
+            val scanqr:FloatingActionButton=view.findViewById(R.id.fab)
+
+            scanqr.visibility=View.VISIBLE
+
 
         } else if (category == 2) {
 
@@ -335,6 +367,29 @@ class Course_eval : Fragment() {
 
                         tableLayout.addView(tableRow)
 
+                        imageButton.setOnClickListener {
+                            tableLayout.visibility=View.GONE
+                            val qrimage:ImageView=view.findViewById(R.id.qrdisplay)
+                            qrimage.visibility=View.VISIBLE
+
+
+
+                            val text = "${document.id}"
+                            val location = getLocation()
+
+                            // Combine the text and location
+                            val combinedText = "$text\n$location"
+
+                            // Generate the QR code
+                            val width = 500
+                            val height = 500
+                            val qrCode = generateQRCode(combinedText, width, height)
+
+                            val qrCodeImageView:ImageView= view.findViewById(R.id.qrdisplay)
+                            qrCodeImageView.setImageBitmap(qrCode )
+
+                        }
+
 
                     }
 
@@ -347,6 +402,72 @@ class Course_eval : Fragment() {
 
         }
         }
+
+    private fun getLocation(): String {
+        val locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        // Check if location permission is granted
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request location permission if not granted
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                Course_eval.REQUEST_LOCATION_PERMISSION
+            )
+            return "Location permission not granted"
+        }
+        // Get the last known location from the location manager
+        val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+        // Set up location listener to get the current location
+        val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                // Do something with the new location
+                locationManager.removeUpdates(this)
+            }
+
+            override fun onProviderEnabled(provider: String) {}
+
+            override fun onProviderDisabled(provider: String) {}
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+        }
+
+        // Request location updates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, locationListener)
+
+        // Return the location string
+        return if (lastKnownLocation != null) {
+            "Latitude: ${lastKnownLocation.latitude}, Longitude: ${lastKnownLocation.longitude}"
+        } else {
+            Toast.makeText(context, "ReLogin location not available rigth now invalid QR", Toast.LENGTH_LONG).show()
+            "Location not available"
+        }
     }
+
+    private fun generateQRCode(text: String, width: Int, height: Int): Bitmap {
+        val qrCodeWriter = QRCodeWriter()
+        val bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height)
+        val width = bitMatrix.width
+        val height = bitMatrix.height
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
+            }
+        }
+
+        return bitmap
+    }
+    companion object {
+        const val REQUEST_LOCATION_PERMISSION = 100
+    }
+
+
+
+
+
+
+}
 
 

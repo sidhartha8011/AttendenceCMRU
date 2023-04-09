@@ -16,5 +16,6 @@ class FragmentPageAdapter(
                 Course_eval()
             else
                 TimeTable()
+
     }
 }
