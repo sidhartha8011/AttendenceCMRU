@@ -15,12 +15,14 @@ with open('teacher_data.csv', 'r') as file:
     next(reader)  # Skip the header row
     teacher_data = []
     for row in reader:
-        name, email, contact_number, password, *_ = row
+        name, email, contact_number, password, teacherid, department, *_ = row
         teacher_data.append({
             "name": name,
             "email": email,
             "contact_number": contact_number,
-            "password": password
+            "password": password,
+            "teacherid": teacherid,
+            "department": department
         })
 
 # Check if teacher data is available in the list
@@ -43,6 +45,8 @@ if teacher_data:
                 "name": data["name"],
                 "email": data["email"],
                 "contact_number": data["contact_number"],
+                "teacherid": data["teacherid"],
+                "department": data["department"]
             })
             print(f"Teacher data created for {data['email']}")
         except Exception as e:

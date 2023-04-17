@@ -221,10 +221,15 @@ class Course_eval : Fragment() {
 
             scanqr.visibility=View.VISIBLE
 
+            scanqr.setOnClickListener{
+                val location = getLocation()
+
+
+            }
+
 
         } else if (category == 2) {
 
-            Log.d("enter1", "ernrew")
 
             tf3.text = "Semester"
             tf2.text = "Total"
@@ -462,8 +467,6 @@ class Course_eval : Fragment() {
     companion object {
         const val REQUEST_LOCATION_PERMISSION = 100
     }
-
-
 
 
 
