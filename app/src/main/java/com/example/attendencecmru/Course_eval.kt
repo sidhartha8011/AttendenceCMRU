@@ -1,7 +1,10 @@
 package com.example.attendencecmru
 import androidx.activity.OnBackPressedCallback
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -29,10 +32,33 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.BarcodeFormat
+import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.qrcode.QRCodeWriter
 import javax.security.auth.Subject
 
 class Course_eval : Fragment() {
+
+    private var scannedText: String? = null // Member variable to store scanned result
+    private var isScanning: Boolean = false // Member variable to track scanning state
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 123) {
+            val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+            if (result != null) {
+                if (result.contents == null) {
+                    // QR code scanning cancelled
+                } else {
+                    scannedText = result.contents // Store the scanned result in the member variable
+                    // Handle the scanned text here or update UI
+                }
+            }
+            isScanning = false // Set scanning state to false after result is obtained
+        }
+    }
+
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -52,11 +78,16 @@ class Course_eval : Fragment() {
                     // Call onBackPressed() to trigger the default behavior
                    // isEnabled = false
 
+                } else if (isScanning) {
+                    isScanning = false // Set scanning state to false if back button is pressed during scanning
                 } else {
-                    // If the condition is not true, allow the back button to behave as usual
-                //    isEnabled = false
-                    requireActivity().onBackPressed()
+                    requireActivity().onBackPressed() // Perform default back button behavior
                 }
+//                if (isScanning) {
+//                    isScanning = false // Set scanning state to false if back button is pressed during scanning
+//                } else {
+//                    requireActivity().onBackPressed() // Perform default back button behavior
+//                }
             }
         })
 
@@ -223,6 +254,7 @@ class Course_eval : Fragment() {
 
             scanqr.setOnClickListener{
                 val location = getLocation()
+                scanQRCode()
 
 
             }
@@ -408,6 +440,7 @@ class Course_eval : Fragment() {
         }
         }
 
+    @SuppressLint("MissingPermission")
     private fun getLocation(): String {
         val locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -420,6 +453,14 @@ class Course_eval : Fragment() {
             )
             return "Location permission not granted"
         }
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request location permission if not granted
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                Course_eval.REQUEST_LOCATION_PERMISSION
+            )
+            return "Location permission not granted"
+        }
+
         // Get the last known location from the location manager
         val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
@@ -463,6 +504,16 @@ class Course_eval : Fragment() {
         }
 
         return bitmap
+    }
+
+    private fun scanQRCode() {
+        isScanning = true // Set scanning state to true before initiating QR code scanning
+        val integrator = IntentIntegrator.forSupportFragment(this)
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+        integrator.setPrompt("Scan QR Code")
+        integrator.setBeepEnabled(false)
+        integrator.setOrientationLocked(false)// Force portrait orientation
+          integrator.initiateScan()
     }
     companion object {
         const val REQUEST_LOCATION_PERMISSION = 100
