@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.*
+import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
@@ -39,18 +40,21 @@ import javax.security.auth.Subject
 class Course_eval : Fragment() {
 
     private var scannedText: String? = null // Member variable to store scanned result
-    private var isScanning: Boolean = false // Member variable to track scanning state
+    private var isScanning: Boolean = false
+    private var completeScaning: Boolean = false// Member variable to track scanning state
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == 123) {
+            completeScaning=false
             val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
             if (result != null) {
                 if (result.contents == null) {
                     // QR code scanning cancelled
                 } else {
-                    scannedText = result.contents // Store the scanned result in the member variable
+                    scannedText = result.contents
+                    completeScaning=true// Store the scanned result in the member variable
                     // Handle the scanned text here or update UI
                 }
             }
@@ -253,8 +257,41 @@ class Course_eval : Fragment() {
             scanqr.visibility=View.VISIBLE
 
             scanqr.setOnClickListener{
-                val location = getLocation()
                 scanQRCode()
+                if(completeScaning) {
+                    val scannedData = scannedText
+                    val separator = "\n" // or "," or any other character you used as a separator
+                    val parts = scannedData?.split(separator)
+                    if (parts!!.size == 2) {
+                        val text = parts[0]
+                        val locationString = parts[1]
+
+
+                        // Check if the scanned location matches the current location
+                        val currentLocation = getLocation()
+                        if (locationString == currentLocation) {
+                            // Show a success message
+                            Toast.makeText(
+                                requireContext(),
+                                "QR code scanned successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+
+                        } else {
+                            // Show an error message
+                            Toast.makeText(
+                                requireContext(),
+                                "QR code does not contain current location",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        // Show an error message for invalid QR code data
+                        Toast.makeText(requireContext(), "Invalid QR code data", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
 
 
             }
