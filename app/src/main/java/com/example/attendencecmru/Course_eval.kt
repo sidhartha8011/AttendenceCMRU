@@ -258,6 +258,12 @@ class Course_eval : Fragment() {
 
             scanqr.setOnClickListener{
                 scanQRCode()
+                // Show a success message
+                Toast.makeText(
+                    requireContext(),
+                    "QR code scanned successfully!",
+                    Toast.LENGTH_SHORT
+                ).show()
                 if(completeScaning) {
                     val scannedData = scannedText
                     val separator = "\n" // or "," or any other character you used as a separator
@@ -549,8 +555,9 @@ class Course_eval : Fragment() {
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
         integrator.setPrompt("Scan QR Code")
         integrator.setBeepEnabled(false)
-        integrator.setOrientationLocked(false)// Force portrait orientation
+//        integrator.setOrientationLocked(false)// Force portrait orientation
           integrator.initiateScan()
+        // Show a success message
     }
     companion object {
         const val REQUEST_LOCATION_PERMISSION = 100
