@@ -24,12 +24,14 @@ import android.view.ViewParent
 import android.widget.*
 import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.BarcodeFormat
@@ -44,9 +46,9 @@ class Course_eval : Fragment() {
     private var completeScaning: Boolean = false// Member variable to track scanning state
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+//        super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 123) {
+//        if (requestCode == 123) {
             completeScaning=false
             val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
             if (result != null) {
@@ -58,9 +60,13 @@ class Course_eval : Fragment() {
                     // Handle the scanned text here or update UI
                 }
             }
-            isScanning = false // Set scanning state to false after result is obtained
+            else {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+
+        isScanning = false // Set scanning state to false after result is obtained
         }
-    }
+//    }
 
 
 
@@ -135,7 +141,10 @@ class Course_eval : Fragment() {
 
                         val subjectName = document.getString("subject_name")
                         val attended = document.getLong("attended")
-                        val total = document.getLong("total")
+                        var total:Long = 0
+                        val subjecjtid=document.id
+
+
 
                         val id = document.id.toString()
 
@@ -229,17 +238,31 @@ class Course_eval : Fragment() {
 
                         tableRow.addView(textView3)
 
-                        textView1.text = subjectName.toString()
-                        textView2.text = attended.toString() + "/" + total.toString()
-                        if (total.toString() == "0")
-                            textView3.text = "0"
-                        else {
+                        val docReff = db.collection("subjects").document(subjecjtid)
+                        docReff.get()
+                            .addOnSuccessListener { document ->
 
-                            val percentage = (attended!!.toFloat() / total!!.toFloat()) * 100
-                            textView3.text = percentage.toString()
-                        }
+                                val teacherid = document.get("teacher_id")
+                                val docRef = db.collection("total_teacher_attendance").document(
+                                    teacherid.toString()
+                                ).collection("subjects").document(subjecjtid)
 
+                                docRef.get()
+                                    .addOnSuccessListener { document ->
+                                        if (document != null) {
+                                            total = document.getLong("total_classes")!!
+                                            textView1.text = subjectName.toString()
+                                            textView2.text = attended.toString() + "/" + total.toString()
+                                            if (total.toString() == "0")
+                                                textView3.text = "0"
+                                            else {
 
+                                                val percentage = (attended!!.toFloat() / total!!.toFloat()) * 100
+                                                textView3.text = percentage.toString()
+                                            }
+                                        }
+                                    }
+                            }
 
                         tableLayout.addView(tableRow)
 
@@ -258,12 +281,12 @@ class Course_eval : Fragment() {
 
             scanqr.setOnClickListener{
                 scanQRCode()
-                // Show a success message
-                Toast.makeText(
-                    requireContext(),
-                    "QR code scanned successfully!",
-                    Toast.LENGTH_SHORT
-                ).show()
+//                // Show a success message
+//                Toast.makeText(
+//                    requireContext(),
+//                    "QR code scanned successfully!",
+//                    Toast.LENGTH_SHORT
+//                ).show()
                 if(completeScaning) {
                     val scannedData = scannedText
                     val separator = "\n" // or "," or any other character you used as a separator
@@ -282,6 +305,29 @@ class Course_eval : Fragment() {
                                 "QR code scanned successfully!",
                                 Toast.LENGTH_SHORT
                             ).show()
+
+                            val dbs = Firebase.firestore
+                            val docRef = db.collection("attendence").document(auth.currentUser!!.uid).collection("subject")
+                                .document(text)
+
+                            docRef.update("attended", FieldValue.increment(1))
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Attendence Marked",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Error try again",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
+
 
 
                         } else {
@@ -468,6 +514,19 @@ class Course_eval : Fragment() {
                             val qrCodeImageView:ImageView= view.findViewById(R.id.qrdisplay)
                             qrCodeImageView.setImageBitmap(qrCode )
 
+                            val docRef = db.collection("total_teacher_attendance").document(
+                                teacherId
+                            ).collection("subjects").document(document.id)
+
+                            docRef.update("total_classes", FieldValue.increment(1))
+                                .addOnSuccessListener{
+                                    textView2.text=(textView2.text.toString().toInt() +1).toString()
+                                }
+
+
+
+
+
                         }
 
 
@@ -552,10 +611,11 @@ class Course_eval : Fragment() {
     private fun scanQRCode() {
         isScanning = true // Set scanning state to true before initiating QR code scanning
         val integrator = IntentIntegrator.forSupportFragment(this)
+        integrator.setOrientationLocked(false)
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
         integrator.setPrompt("Scan QR Code")
         integrator.setBeepEnabled(false)
-//        integrator.setOrientationLocked(false)// Force portrait orientation
+    //    integrator.setOrientationLocked(false)// Force portrait orientation
           integrator.initiateScan()
         // Show a success message
     }
