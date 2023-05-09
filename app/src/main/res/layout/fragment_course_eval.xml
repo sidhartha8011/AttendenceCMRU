@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
-
+        android:visibility="visible"
 
         app:layout_constraintTop_toTopOf="parent"
         >
@@ -55,6 +55,39 @@
 
         </TableRow>
     </TableLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TableLayout
+        android:id="@+id/total_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:visibility="gone"
+
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:id="@+id/sub_id"
+                android:layout_weight="2"
+                android:layout_height="50dp"
+                style="@style/top"
+                android:text="Attendence"
+                />
+
+        </TableRow>
+    </TableLayout>
+    </ScrollView>
+
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

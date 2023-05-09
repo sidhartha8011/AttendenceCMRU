@@ -26,8 +26,11 @@ import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -77,6 +80,9 @@ class Course_eval : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val imageView:ImageView=view.findViewById(R.id.qrdisplay)
+                val t1:TableLayout=view.findViewById(R.id.table_layout)
+                val t2:TableLayout=view.findViewById(R.id.total_show)
+
                 if (imageView.visibility==View.VISIBLE) {
                     // Perform your task here, for example, save the data and then exit the fragment
                     // ...
@@ -90,9 +96,17 @@ class Course_eval : Fragment() {
 
                 } else if (isScanning) {
                     isScanning = false // Set scanning state to false if back button is pressed during scanning
-                } else {
+                } else if(t2.visibility==View.VISIBLE) {
+                    t2.visibility = View.GONE
+                    t1.visibility = View.VISIBLE
+                }else{
                     requireActivity().onBackPressed() // Perform default back button behavior
                 }
+
+                if(t1.visibility==View.VISIBLE){
+
+                }
+
 //                if (isScanning) {
 //                    isScanning = false // Set scanning state to false if back button is pressed during scanning
 //                } else {
@@ -314,7 +328,7 @@ class Course_eval : Fragment() {
                                 .addOnSuccessListener {
                                     Toast.makeText(
                                         requireContext(),
-                                        "Attendence Marked",
+                                        "Attendence Marked Relogin to view updated attendence",
                                         Toast.LENGTH_SHORT
                                     ).show()
 
@@ -391,6 +405,8 @@ class Course_eval : Fragment() {
 
                         val tableRow = TableRow(context)
                         layoutParams.weight = 2F
+
+
 
                         tableRow.layoutParams = layoutParams
 
@@ -491,8 +507,6 @@ class Course_eval : Fragment() {
                         textView3.text = semester.toString()
                         textView2.text = total.toString()
 
-                        tableLayout.addView(tableRow)
-
                         imageButton.setOnClickListener {
                             tableLayout.visibility=View.GONE
                             val qrimage:ImageView=view.findViewById(R.id.qrdisplay)
@@ -524,11 +538,195 @@ class Course_eval : Fragment() {
                                 }
 
 
-
-
-
                         }
 
+
+
+//
+//                        tableRow.setOnClickListener {
+//                            tableLayout.visibility=View.GONE
+//
+//                            val table2:TableLayout=view.findViewById(R.id.total_show)
+//
+//                            table2.visibility=View.VISIBLE
+//
+//                            val subid:TextView=view.findViewById(R.id.sub_id)
+//
+//                            subid.text=id
+//
+//                            val tableLayout = view.findViewById<TableLayout>(R.id.table_layout)
+//                            val layoutParams = TableRow.LayoutParams(0, 90)
+//
+//                            layoutParams.bottomMargin = 10
+//
+//                            val tableRow1 = TableRow(context)
+//                            layoutParams.weight = 2F
+//
+//                            tableRow.layoutParams = layoutParams
+//
+//                            val textView1 = TextView(context)
+//                            textView1.id = counter
+//                            counter++
+//                            textView1.layoutParams = layoutParams
+//
+//                            tableRow1.addView(textView1)
+//
+//                            val textView2 = TextView(context)
+//                            textView2.id = counter
+//                            counter++
+//                            layoutParams.weight = 1F
+//
+//                            textView2.layoutParams = layoutParams
+//
+//                            tableRow1.addView(textView2)
+//
+//
+//                            val textView3 = TextView(context)
+//                            textView3.id = counter
+//                            counter++
+//                            layoutParams.weight = 2F
+//                            textView3.layoutParams = layoutParams
+//                            tableRow1.addView(textView3)
+//
+//                            textView1.textSize = 18F
+//                            textView1.gravity = Gravity.CENTER
+//                            textView1.setTypeface(null, Typeface.BOLD)
+//                            textView1.setTextColor(
+//                                ContextCompat.getColor(
+//                                    requireContext(),
+//                                    R.color.black
+//                                )
+//                            )
+//                            textView1.setBackgroundColor(
+//                                ContextCompat.getColor(
+//                                    requireContext(),
+//                                    R.color.grey
+//                                )
+//                            )
+//                            textView1.setPadding(0, 2, 0, 2)
+//                            textView1.setAllCaps(true)
+//
+//                            textView2.textSize = 18F
+//                            textView2.gravity = Gravity.CENTER
+//                            textView2.setTypeface(null, Typeface.BOLD)
+//                            textView2.setTextColor(
+//                                ContextCompat.getColor(
+//                                    requireContext(),
+//                                    R.color.black
+//                                )
+//                            )
+//                            textView2.setBackgroundColor(
+//                                ContextCompat.getColor(
+//                                    requireContext(),
+//                                    R.color.grey
+//                                )
+//                            )
+//                            textView2.setPadding(0, 2, 0, 2)
+//                            textView2.setAllCaps(true)
+//
+//                            textView3.textSize = 18F
+//                            textView3.gravity = Gravity.CENTER
+//                            textView3.setTypeface(null, Typeface.BOLD)
+//                            textView3.setTextColor(
+//                                ContextCompat.getColor(
+//                                    requireContext(),
+//                                    R.color.black
+//                                )
+//                            )
+//                            textView3.setBackgroundColor(
+//                                ContextCompat.getColor(
+//                                    requireContext(),
+//                                    R.color.grey
+//                                )
+//                            )
+//                            textView3.setPadding(0, 2, 0, 2)
+//                            textView3.setAllCaps(true)
+//
+//                            table2.addView(tableRow1)
+//
+//                            val docRef = db.collection("attendence")
+//
+//                            docRef.get().addOnSuccessListener {documents->
+//                                for(document in documents) {
+//                                    val stuid = document.id
+//                                    val ref= db.collection("attendence").document(stuid).collection("subjects").document(subid.toString())
+//
+//                                    ref.get().addOnSuccessListener{
+//                                        val data=it.data
+//                                        val attended = data?.get("attended").toString().toInt()
+//                                        val total = textView2.text.toString().toInt()
+//
+//                                        val sturef=db.collection("students").document(stuid).get().addOnSuccessListener {
+//                                            val data=it.data
+//                                            val name = data?.get("name").toString()
+//                                            val usn=data?.get("usn").toString()
+//
+//                                            textView1.text="$usn\n$name"
+//                                            textView2.text="$attended/$total"
+//
+//                                            if (total.toString() == "0")
+//                                                textView3.text = "0"
+//                                            else {
+//
+//                                                val percentage = (attended!!.toFloat() / total!!.toFloat()) * 100
+//                                                textView3.text = percentage.toString()
+//                                            }
+//
+//                                        }
+//
+//
+//                                    }
+//
+//                                }
+//                            }
+
+
+
+
+         //               }
+
+
+
+//                        tableLayout.addView(tableRow)
+
+//                        imageButton.setOnClickListener {
+//                            tableLayout.visibility=View.GONE
+//                            val qrimage:ImageView=view.findViewById(R.id.qrdisplay)
+//                            qrimage.visibility=View.VISIBLE
+//
+//
+//
+//                            val text = "${document.id}"
+//                            val location = getLocation()
+//
+//                            // Combine the text and location
+//                            val combinedText = "$text\n$location"
+//
+//                            // Generate the QR code
+//                            val width = 500
+//                            val height = 500
+//                            val qrCode = generateQRCode(combinedText, width, height)
+//
+//                            val qrCodeImageView:ImageView= view.findViewById(R.id.qrdisplay)
+//                            qrCodeImageView.setImageBitmap(qrCode )
+//
+//                            val docRef = db.collection("total_teacher_attendance").document(
+//                                teacherId
+//                            ).collection("subjects").document(document.id)
+//
+//                            docRef.update("total_classes", FieldValue.increment(1))
+//                                .addOnSuccessListener{
+//                                    textView2.text=(textView2.text.toString().toInt() +1).toString()
+//                                }
+//
+//
+//
+//
+//
+//                        }
+
+
+                        tableLayout.addView(tableRow)
 
                     }
 
@@ -615,9 +813,9 @@ class Course_eval : Fragment() {
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
         integrator.setPrompt("Scan QR Code")
         integrator.setBeepEnabled(false)
-    //    integrator.setOrientationLocked(false)// Force portrait orientation
-          integrator.initiateScan()
-        // Show a success message
+
+        integrator.initiateScan()
+
     }
     companion object {
         const val REQUEST_LOCATION_PERMISSION = 100
