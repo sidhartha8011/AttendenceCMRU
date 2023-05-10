@@ -103,10 +103,6 @@ class Course_eval : Fragment() {
                     requireActivity().onBackPressed() // Perform default back button behavior
                 }
 
-                if(t1.visibility==View.VISIBLE){
-
-                }
-
 //                if (isScanning) {
 //                    isScanning = false // Set scanning state to false if back button is pressed during scanning
 //                } else {
@@ -507,6 +503,10 @@ class Course_eval : Fragment() {
                         textView3.text = semester.toString()
                         textView2.text = total.toString()
 
+
+
+
+
                         imageButton.setOnClickListener {
                             tableLayout.visibility=View.GONE
                             val qrimage:ImageView=view.findViewById(R.id.qrdisplay)
@@ -554,7 +554,7 @@ class Course_eval : Fragment() {
 //
 //                            subid.text=id
 //
-//                            val tableLayout = view.findViewById<TableLayout>(R.id.table_layout)
+//                            val tableLayout = view.findViewById<TableLayout>(R.id.total_show)
 //                            val layoutParams = TableRow.LayoutParams(0, 90)
 //
 //                            layoutParams.bottomMargin = 10
@@ -643,7 +643,7 @@ class Course_eval : Fragment() {
 //                            textView3.setAllCaps(true)
 //
 //                            table2.addView(tableRow1)
-//
+
 //                            val docRef = db.collection("attendence")
 //
 //                            docRef.get().addOnSuccessListener {documents->
@@ -683,7 +683,7 @@ class Course_eval : Fragment() {
 
 
 
-         //               }
+              //          }
 
 
 
@@ -724,7 +724,6 @@ class Course_eval : Fragment() {
 //
 //
 //                        }
-
 
                         tableLayout.addView(tableRow)
 
