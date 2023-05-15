@@ -127,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="20dp"
+                android:textColor="@color/black"
                 android:text="Mail"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -149,6 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="20dp"
+                android:textColor="@color/black"
                 android:text="Contact"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -172,6 +174,7 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="20dp"
                 android:text=""
+                android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -193,6 +196,7 @@
                 android:id="@+id/profileUSN"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
                 android:paddingLeft="20dp"
                 android:textStyle="bold" />
         </LinearLayout>
