@@ -1,10 +1,8 @@
 package com.example.attendencecmru
-import androidx.activity.OnBackPressedCallback
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -12,26 +10,16 @@ import android.graphics.Typeface
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
 import android.widget.*
-import androidx.constraintlayout.motion.widget.Debug.getLocation
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
-import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -40,7 +28,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.qrcode.QRCodeWriter
-import javax.security.auth.Subject
 
 class Course_eval : Fragment() {
 
@@ -80,8 +67,6 @@ class Course_eval : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val imageView:ImageView=view.findViewById(R.id.qrdisplay)
-                val t1:TableLayout=view.findViewById(R.id.table_layout)
-                val t2:TableLayout=view.findViewById(R.id.total_show)
 
                 if (imageView.visibility==View.VISIBLE) {
                     // Perform your task here, for example, save the data and then exit the fragment
@@ -96,10 +81,7 @@ class Course_eval : Fragment() {
 
                 } else if (isScanning) {
                     isScanning = false // Set scanning state to false if back button is pressed during scanning
-                } else if(t2.visibility==View.VISIBLE) {
-                    t2.visibility = View.GONE
-                    t1.visibility = View.VISIBLE
-                }else{
+                } else{
                     requireActivity().onBackPressed() // Perform default back button behavior
                 }
 
@@ -268,7 +250,7 @@ class Course_eval : Fragment() {
                                             else {
 
                                                 val percentage = (attended!!.toFloat() / total!!.toFloat()) * 100
-                                                textView3.text = percentage.toString()
+                                                textView3.text = percentage.toInt().toString()+"%"
                                             }
                                         }
                                     }
@@ -541,6 +523,17 @@ class Course_eval : Fragment() {
                         }
 
 
+                        tableRow.setOnClickListener {
+                            val intent = Intent(requireContext(), attendenceView::class.java)
+                            intent.putExtra("key", id);
+                            val t=textView2.text.toString().toInt()
+                            intent.putExtra("key1",t );
+                            requireContext().startActivity(intent);
+
+                        }
+
+
+
 
 //
 //                        tableRow.setOnClickListener {
@@ -643,7 +636,7 @@ class Course_eval : Fragment() {
 //                            textView3.setAllCaps(true)
 //
 //                            table2.addView(tableRow1)
-
+//
 //                            val docRef = db.collection("attendence")
 //
 //                            docRef.get().addOnSuccessListener {documents->
@@ -679,7 +672,7 @@ class Course_eval : Fragment() {
 //
 //                                }
 //                            }
-
+//
 
 
 
@@ -734,7 +727,6 @@ class Course_eval : Fragment() {
                 .addOnFailureListener {
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
-
 
         }
         }

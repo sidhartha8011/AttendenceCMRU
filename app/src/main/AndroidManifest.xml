@@ -6,26 +6,24 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-<!--    <uses-permission-->
-<!--        android:name="android.permission.ACCESS_FINE_LOCATION"-->
-<!--        android:maxSdkVersion="22" />-->
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true"
+        android:icon="@mipmap/mainicon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/mainicon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AttendenceCMRU"
         tools:targetApi="31">
         <activity
+            android:name=".attendenceView"
+            android:exported="false" />
+        <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
-
         <activity
             android:name=".Profile"
             android:exported="false">
@@ -55,12 +53,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
-
     </application>
-
-
-
-
 
 </manifest>

@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         val db= Firebase.firestore
 
 
+
+
         val usersRef1 = db.collection("students")
         val usersRef2 = db.collection("teachers")
 
